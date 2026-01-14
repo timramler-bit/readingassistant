@@ -1,0 +1,8 @@
+
+{
+  "name": "Reading Assistant",
+  "description": "Professional AI-powered reading tool with multilingual explanations, OCR, and speed training.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
