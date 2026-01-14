@@ -1,7 +1,7 @@
 
 import React from 'react';
-import { getWordParts } from '../utils/textUtils';
-import { EFLSettings } from '../types';
+import { getWordParts } from '../utils/textUtils.ts';
+import { EFLSettings } from '../types.ts';
 
 interface RSVPDisplayProps {
   word: string;

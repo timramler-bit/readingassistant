@@ -1,6 +1,6 @@
 
-import React, { useRef } from 'react';
-import { EFLSettings, RampingSettings } from '../types';
+import React from 'react';
+import { EFLSettings, RampingSettings } from '../types.ts';
 
 interface SettingsPanelProps {
   text: string;
@@ -25,7 +25,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({
   onLoopsChange, onRampingChange, onClose
 }) => {
   return (
-    <div className="fixed inset-0 z-[500] bg-black/90 backdrop-blur-md flex flex-col p-4 md:p-8 overflow-y-auto font-['Poppins'] animate-in fade-in duration-300">
+    <div className="fixed inset-0 z-[500] bg-black/95 backdrop-blur-md flex flex-col p-4 md:p-8 overflow-y-auto font-['Poppins'] animate-in fade-in duration-300">
       <div className="max-w-4xl mx-auto w-full space-y-12 py-10">
         <header className="flex justify-between items-center border-b border-white/10 pb-8">
           <div className="flex items-center gap-5">
@@ -33,12 +33,12 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({
               <span className="text-white font-black text-2xl">T</span>
             </div>
             <div>
-              <h2 className="text-3xl font-black tracking-tight italic">Control Center</h2>
+              <h2 className="text-3xl font-black tracking-tight italic text-white">Control Center</h2>
               <p className="text-zinc-500 text-[10px] uppercase tracking-widest font-black">Tim the Teacher Settings</p>
             </div>
           </div>
-          <button onClick={onClose} className="p-4 bg-white/5 hover:bg-white/10 rounded-2xl transition-all border border-white/5">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" /></svg>
+          <button onClick={onClose} className="p-4 bg-white/5 hover:bg-white/10 rounded-2xl transition-all border border-white/5 group">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-zinc-500 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" /></svg>
           </button>
         </header>
 
@@ -50,7 +50,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({
               <textarea
                 value={text}
                 onChange={(e) => onTextChange(e.target.value)}
-                className="w-full h-64 bg-zinc-900/60 border border-zinc-800 rounded-3xl p-6 text-lg font-medium focus:border-cyan-500 outline-none transition-all resize-none leading-relaxed"
+                className="w-full h-64 bg-zinc-900/60 border border-zinc-800 rounded-3xl p-6 text-lg font-medium focus:border-cyan-500 outline-none transition-all resize-none leading-relaxed text-zinc-200"
                 placeholder="Paste text here..."
               />
             </section>
@@ -75,7 +75,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({
                   </label>
                   <label className="flex items-center gap-4 cursor-pointer group">
                     <input type="checkbox" checked={efl.pauseOnPunctuation} onChange={(e) => onEflChange({ pauseOnPunctuation: e.target.checked })} className="w-5 h-5 accent-emerald-500 rounded" />
-                    <span className="font-bold text-zinc-300 group-hover:text-white transition-colors text-sm">Punctuation Pause</span>
+                    <span className="font-bold text-zinc-300 group-hover:text-white transition-colors text-sm">Punctuation Pauses</span>
                   </label>
                   <label className="flex items-center gap-4 cursor-pointer group">
                     <input type="checkbox" checked={efl.slowLongWords} onChange={(e) => onEflChange({ slowLongWords: e.target.checked })} className="w-5 h-5 accent-emerald-500 rounded" />
@@ -126,8 +126,8 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({
             </section>
             
             <section className="bg-zinc-900/40 p-8 rounded-3xl border border-white/5 space-y-4">
-                <p className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] leading-relaxed">
-                  Focus on the red letters in the center. The app will automatically pause for punctuation to help your comprehension.
+                <p className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] leading-relaxed italic">
+                  "Focus on the red letters. The app will automatically slow down for periods and commas to improve your understanding."
                 </p>
             </section>
           </div>
@@ -135,7 +135,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({
 
         <button 
           onClick={onClose}
-          className="w-full py-8 bg-white text-black font-black rounded-3xl text-3xl hover:bg-cyan-500 transition-all transform active:scale-95 shadow-2xl uppercase tracking-tighter"
+          className="w-full py-8 bg-white text-black font-black rounded-3xl text-3xl hover:bg-cyan-500 transition-all transform active:scale-95 shadow-[0_0_50px_rgba(255,255,255,0.15)] uppercase tracking-tighter"
         >
           {isExerciseMode ? 'Start Training' : 'Confirm Settings'}
         </button>

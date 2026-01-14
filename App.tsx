@@ -1,12 +1,12 @@
 
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import RSVPDisplay from './components/RSVPDisplay';
-import SettingsPanel from './components/SettingsPanel';
-import CameraScanner from './components/CameraScanner';
-import WordInsightModal from './components/WordInsightModal';
-import { splitIntoWords } from './utils/textUtils';
-import { scanPassage, analyzePassage } from './utils/aiUtils';
-import { EFLSettings, RampingSettings, PassageAnalysis } from './types';
+import RSVPDisplay from './components/RSVPDisplay.tsx';
+import SettingsPanel from './components/SettingsPanel.tsx';
+import CameraScanner from './components/CameraScanner.tsx';
+import WordInsightModal from './components/WordInsightModal.tsx';
+import { splitIntoWords } from './utils/textUtils.ts';
+import { scanPassage, analyzePassage } from './utils/aiUtils.ts';
+import { EFLSettings, RampingSettings, PassageAnalysis } from './types.ts';
 
 const DEFAULT_TEXT = `Welcome to the Reading Assistant! You can study any passage here. Try clicking on words like "Assistant" or "Professional" to see their meaning. You can also scan physical documents or speed read using the training mode. Happy learning!`;
 
@@ -37,8 +37,8 @@ const App: React.FC = () => {
   const timerRef = useRef<number | null>(null);
 
   const t = {
-    scan: targetLanguage === 'Japanese' ? 'スキャン' : 'Scan',
-    upload: targetLanguage === 'Japanese' ? '画像選択' : 'Upload',
+    scan: targetLanguage === 'Japanese' ? 'カメラ' : 'Scan',
+    upload: targetLanguage === 'Japanese' ? 'アップロード' : 'Upload',
     practice: targetLanguage === 'Japanese' ? 'スピード読解練習' : 'Practice Speed Reading',
     summary: targetLanguage === 'Japanese' ? '要約' : 'Summary',
     grammar: targetLanguage === 'Japanese' ? '文法解説' : 'Grammar Insights',
@@ -79,8 +79,11 @@ const App: React.FC = () => {
       let intervalMultiplier = 1;
 
       if (efl.pauseOnPunctuation) {
-        if (/[.!?]$/.test(currentWord)) intervalMultiplier = 2.5;
-        else if (/[,;:]$/.test(currentWord)) intervalMultiplier = 1.6;
+        if (/[.!?]$/.test(currentWord)) {
+          intervalMultiplier = 2.5; 
+        } else if (/[,;:]$/.test(currentWord)) {
+          intervalMultiplier = 1.6;
+        }
       }
 
       if (efl.slowLongWords && currentWord.length > 8) {
@@ -94,14 +97,17 @@ const App: React.FC = () => {
   }, [isPlaying, currentIndex, words, playNextWord, getEffectiveWpm, efl.pauseOnPunctuation, efl.slowLongWords]);
 
   const processImage = async (base64: string) => {
+    setIsScanning(false);
     setIsAnalyzing(true);
     try {
       const extractedText = await scanPassage(base64);
-      setText(extractedText);
-      const res = await analyzePassage(extractedText, targetLanguage);
-      setAnalysis(res);
-      setCurrentIndex(0);
-      setIsPlaying(false);
+      if (extractedText) {
+        setText(extractedText);
+        const res = await analyzePassage(extractedText, targetLanguage);
+        setAnalysis(res);
+        setCurrentIndex(0);
+        setIsPlaying(false);
+      }
     } catch (err) { console.error(err); }
     setIsAnalyzing(false);
   };
@@ -115,6 +121,7 @@ const App: React.FC = () => {
       processImage(base64);
     };
     reader.readAsDataURL(file);
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   useEffect(() => {
@@ -130,7 +137,7 @@ const App: React.FC = () => {
   const startExerciseFlow = () => {
     setIsExerciseMode(true);
     setIsPlaying(false);
-    setShowSettings(true);
+    setShowSettings(true); 
   };
 
   return (
@@ -139,8 +146,8 @@ const App: React.FC = () => {
       {/* GLOBAL HEADER */}
       <header className="p-4 md:p-6 flex justify-between items-center z-20 border-b border-white/5 bg-zinc-950/80 backdrop-blur-xl">
         <div className="flex items-center gap-4 group">
-          <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
-             <span className="text-white font-black text-xl">T</span>
+          <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-300">
+             <span className="text-white font-black text-xl md:text-2xl">T</span>
           </div>
           <div className="flex flex-col hidden sm:flex">
             <h1 className="text-lg md:text-2xl font-black tracking-tighter text-white leading-none">Tim the Teacher</h1>
@@ -148,29 +155,29 @@ const App: React.FC = () => {
           </div>
         </div>
         
-        <div className="flex items-center gap-2 md:gap-3">
+        <div className="flex items-center gap-2 md:gap-4">
           <div className="bg-white/5 p-1 rounded-xl flex border border-white/10">
             <button 
               onClick={() => setTargetLanguage('English')}
-              className={`px-2 md:px-3 py-1.5 rounded-lg text-[9px] md:text-[10px] font-black uppercase transition-all ${targetLanguage === 'English' ? 'bg-cyan-600 text-white shadow-lg' : 'text-zinc-500 hover:text-white'}`}
+              className={`px-3 py-1.5 rounded-lg text-[9px] md:text-[10px] font-black uppercase transition-all ${targetLanguage === 'English' ? 'bg-cyan-600 text-white shadow-lg' : 'text-zinc-500 hover:text-white'}`}
             >
               EN
             </button>
             <button 
               onClick={() => setTargetLanguage('Japanese')}
-              className={`px-2 md:px-3 py-1.5 rounded-lg text-[9px] md:text-[10px] font-black uppercase transition-all ${targetLanguage === 'Japanese' ? 'bg-cyan-600 text-white shadow-lg' : 'text-zinc-500 hover:text-white'}`}
+              className={`px-3 py-1.5 rounded-lg text-[9px] md:text-[10px] font-black uppercase transition-all ${targetLanguage === 'Japanese' ? 'bg-cyan-600 text-white shadow-lg' : 'text-zinc-500 hover:text-white'}`}
             >
               JA
             </button>
           </div>
 
           <div className="flex gap-2">
-            <button onClick={() => setIsScanning(true)} className="px-3 py-2 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-all font-black uppercase text-[9px] md:text-[10px] flex items-center gap-1 md:gap-2">
+            <button onClick={() => setIsScanning(true)} className="px-3 py-2 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-all font-black uppercase text-[9px] md:text-[10px] flex items-center gap-2">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /></svg>
               <span className="hidden xs:inline">{t.scan}</span>
             </button>
 
-            <button onClick={() => fileInputRef.current?.click()} className="px-3 py-2 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-all font-black uppercase text-[9px] md:text-[10px] flex items-center gap-1 md:gap-2 text-cyan-500">
+            <button onClick={() => fileInputRef.current?.click()} className="px-3 py-2 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-all font-black uppercase text-[9px] md:text-[10px] flex items-center gap-2 text-cyan-500">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
               <span className="hidden xs:inline">{t.upload}</span>
             </button>
@@ -184,7 +191,7 @@ const App: React.FC = () => {
       </header>
 
       {/* MAIN VIEW */}
-      <main className="flex-1 flex flex-col md:flex-row overflow-hidden">
+      <main className="flex-1 flex flex-col md:flex-row overflow-hidden relative">
         <section className={`flex-1 overflow-y-auto p-6 md:p-12 transition-all duration-500 ${showAnalysisPanel ? 'md:mr-[400px]' : ''}`}>
           <div className="max-w-4xl mx-auto space-y-10">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-white/5 pb-6">
@@ -223,7 +230,7 @@ const App: React.FC = () => {
         <aside className={`fixed top-0 right-0 h-full w-full md:w-[400px] bg-zinc-950 border-l border-white/10 z-30 transition-transform duration-700 ease-in-out transform ${showAnalysisPanel ? 'translate-x-0' : 'translate-x-full'} flex flex-col pt-20`}>
           <div className="p-6 flex-1 overflow-y-auto custom-scrollbar">
             <header className="flex justify-between items-center mb-10">
-               <h2 className="text-lg font-black tracking-tight">{t.analyzing}</h2>
+               <h2 className="text-lg font-black tracking-tight">{analysis ? t.grammar : t.analyzing}</h2>
                <button onClick={() => setShowAnalysisPanel(false)} className="text-zinc-500 hover:text-white md:hidden"><svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg></button>
             </header>
 

@@ -1,5 +1,5 @@
 
-import { WordPart } from '../types';
+import { WordPart } from '../types.ts';
 
 /**
  * Calculates the Optimal Recognition Point (ORP) for a word.

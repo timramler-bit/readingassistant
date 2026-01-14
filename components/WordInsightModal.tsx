@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { getWordInsight, speakWord } from '../utils/aiUtils';
+import { getWordInsight, speakWord } from '../utils/aiUtils.ts';
 
 interface WordInsightModalProps {
   word: string;
